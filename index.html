@@ -376,9 +376,9 @@
             const tag = item.querySelector(".tag");
             const classList = tag?.classList || [];
             const status = classList.contains("tagCompleted") ? "Completed" :
-                           classList.contains("tagNotStarted") ? "NotStarted" :
-                           classList.contains("tagInProgress") ? "InProgress" :
-                           "OnHold";
+                           classList.contains("tagNotStarted") ? "Not Started" :
+                           classList.contains("tagInProgress") ? "In Progress" :
+                           "On Hold";
 
             return {
               title: item.querySelector("span").textContent,
@@ -398,7 +398,8 @@
           platforms.forEach((platform) => {
             const list = document.getElementById(`${platform}-games`);
             list.innerHTML = "";
-            (data[platform] || []).forEach((game) => {
+            const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
+            sortedGames.forEach((game) => {
               const li = createGameItem(platform, game.title, game.status);
               list.appendChild(li);
             });
@@ -414,14 +415,18 @@
         const span = document.createElement("span");
         span.textContent = title;
 
-        const tag = document.createElement("span");
+        const tag = document.createElement("select");
         tag.classList.add("tag", `tag${status.replace(/\s/g, '')}`);
-        tag.textContent = status;
-        tag.contentEditable = true;
-        tag.addEventListener("blur", () => {
-          const newStatus = tag.textContent.trim().replace(/\s/g, '');
+        ["NotStarted", "InProgress", "OnHold", "Completed"].forEach(opt => {
+          const option = document.createElement("option");
+          option.value = opt;
+          option.textContent = opt.replace(/([A-Z])/g, ' $1').trim();
+          if (opt === status.replace(/\s/g, '')) option.selected = true;
+          tag.appendChild(option);
+        });
+        tag.addEventListener("change", () => {
           tag.className = "tag";
-          tag.classList.add(`tag${newStatus}`);
+          tag.classList.add(`tag${tag.value}`);
           updateProgress(platform);
           saveToLocalStorage();
         });
@@ -455,7 +460,17 @@
 
           const li = createGameItem(platform, title, status);
 
-          gameList.appendChild(li);
+          const existingItems = Array.from(gameList.querySelectorAll("li"));
+          existingItems.push(li);
+          existingItems.sort((a, b) => {
+            const aText = a.querySelector("span").textContent.toLowerCase();
+            const bText = b.querySelector("span").textContent.toLowerCase();
+            return aText.localeCompare(bText);
+          });
+
+          gameList.innerHTML = "";
+          existingItems.forEach(item => gameList.appendChild(item));
+
           titleInput.value = "";
           updateProgress(platform);
           saveToLocalStorage();
@@ -464,6 +479,14 @@
 
       const platforms = ["epic", "nintendo", "playstation", "steam", "xbox"];
       const statuses = ["All", "Completed", "NotStarted", "InProgress", "OnHold"];
+      
+      const statusLabels = {
+        All: "All",
+        Completed: "Completed",
+        NotStarted: "Not Started",
+        InProgress: "In Progress",
+        OnHold: "On Hold"
+      };
 
       platforms.forEach((platform) => {
         const filterContainer = document.createElement("div");
@@ -475,7 +498,8 @@
         statuses.forEach((status) => {
           const btn = document.createElement("div");
           btn.className = "tab-button";
-          btn.textContent = status;
+          btn.textContent = statusLabels[status];
+  		  btn.dataset.status = status;
           btn.addEventListener("click", () => filterGamesByStatus(platform, status));
           filterContainer.appendChild(btn);
         });
@@ -487,12 +511,8 @@
 
         items.forEach((item) => {
           const tag = item.querySelector(".tag");
-          const classList = tag?.classList || [];
-          const currentStatus = classList.contains("tagCompleted") ? "Completed" :
-                                classList.contains("tagNotStarted") ? "NotStarted" :
-                                classList.contains("tagInProgress") ? "InProgress" :
-                                classList.contains("tagOnHold") ? "OnHold" : "";
-
+          const value = tag?.value || "";
+          const currentStatus = value;
           item.style.display = (status === "All" || currentStatus === status) ? "" : "none";
         });
 
@@ -508,12 +528,7 @@
           const items = document.querySelectorAll(`#${platform}-games li`);
           data[platform] = Array.from(items).map((item) => {
             const tag = item.querySelector(".tag");
-            const classList = tag?.classList || [];
-            const status = classList.contains("tagCompleted") ? "Completed" :
-                           classList.contains("tagNotStarted") ? "NotStarted" :
-                           classList.contains("tagInProgress") ? "InProgress" :
-                           "OnHold";
-
+            const status = tag?.value || "OnHold";
             return {
               title: item.querySelector("span").textContent,
               status
@@ -547,7 +562,8 @@
               platforms.forEach((platform) => {
                 const list = document.getElementById(`${platform}-games`);
                 list.innerHTML = "";
-                (data[platform] || []).forEach((game) => {
+                const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
+                sortedGames.forEach((game) => {
                   const li = createGameItem(platform, game.title, game.status);
                   list.appendChild(li);
                 });
@@ -571,3 +587,4 @@
     </script>
   </body>
 </html>
+
