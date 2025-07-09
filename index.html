@@ -1,0 +1,532 @@
+<html lang="en">
+  <head>
+    <meta name="google-site-verification" content="TM2JLp2z2ivvAbxCRiY7ekyg7shRkm4LJ23ywpbje1U" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gamelog</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        background: #121212;
+        color: #ddd;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 0 auto 20px;
+        max-width: 1280px;
+        border-radius: 8px;
+      }
+
+      .content-container {
+        display: flex;
+        gap: 20px;
+        max-width: 1280px;
+        margin: 60px auto 0;
+      }
+
+      .content {
+        display: none;
+        border: 0px solid #444;
+        padding: 20px;
+        background: #212121;
+        border-radius: 8px;
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .content.active {
+        display: block;
+      }
+
+      .content ul {
+        color: #a0a0a0;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      li {
+        margin: 5px 0;
+      }
+
+      .tag {
+        font-size: 0.9em;
+        padding: 4px 8px;
+        border-radius: 8px;
+        display: inline-block;
+        margin-left: 10px;
+        color: #121212;
+      }
+
+      .tagCompleted {
+        background: #FBE83A;
+      }
+      .tagNotStarted {
+        background: #A4ABB6;
+      }
+      .tagInProgress {
+        background: #2CCCFF;
+      }
+      .tagOnHold {
+        background: #FFB302;
+      }
+
+      .tagNote {
+        color: #aaa;
+        background: #1a1a1a;
+        padding: 4px 8px;
+        border-radius: 8px;
+        display: block;
+        margin-left: 20px;
+        margin-top: 4px;
+        width: fit-content;
+        max-width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+      }
+
+      .sidebar {
+        text-align: center;
+        background: #212121;
+        border-radius: 8px;
+        padding: 20px;
+        width: 324;
+        height: 496;
+        flex-shrink: 0;
+        color: #ccc;
+        font-size: 0.95em;
+        margin-bottom: 20px;
+      }
+
+      .sidebar h3 {
+        margin-top: 20;
+        color: #a0a0a0;
+      }
+
+      .sidebar a {
+        color: #88c0d0;
+        text-decoration: none;
+      }
+      .sidebar a:hover {
+        text-decoration: underline;
+      }
+
+      .profile-bg {
+        width: 100%;
+        height: 100%;
+        background-image: url("https://cdn.discordapp.com/avatars/474408288914505738/62c637c9587dd2b5d501e2a57ca326b7.webp?size=512");
+        background-size: 75% 50%;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 8px;
+      }
+
+      .tab-box {
+        background: #212121;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .tab-box2 {
+        background: #212121;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      .tab-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tab-buttons2 {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tab-button {
+        padding: 10px;
+        background: #2a2a2a;
+        color: #ccc;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .tab-button:hover,
+      .tab-button.active {
+        background: #383838;
+        color: #f7bf00;
+      }
+
+      .scrollable-list {
+        margin-top: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 8px;
+        scrollbar-color: #383838 #1a1a1a;
+      }
+      
+      .progress {
+      	padding-top: 8px;
+      }
+
+      .content-section {
+        flex-grow: 1;
+      }
+
+      .add-form {
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .add-form input,
+      .add-form select,
+      .add-form button {
+        padding: 8px;
+        border-radius: 6px;
+        border: none;
+      }
+      .add-form input,
+      .add-form select {
+        background: #1a1a1a;
+        color: #ccc;
+      }
+      .add-form button {
+        background: #383838;
+        color: #f7bf00;
+        cursor: pointer;
+      }
+
+      .remove-button {
+        margin-left: 10px;
+        background: #444;
+        color: #ccc;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .remove-button:hover {
+        background: #ff5c5c;
+        color: #fff;
+      }
+    </style>
+  </head>
+      <body>
+    <h1>Gamelog</h1>
+    <div class="content-container">
+      <div class="sidebar-wrapper">
+        <div class="sidebar">
+          <div class="profile-bg">
+            <h2> Lepehn </h2>
+            <h3> @Lepehn </h3>
+          </div>
+        </div>
+        <div class="tab-sidebar">
+          <div class="tab-box">
+            <div class="tab-buttons">
+              <div class="tab-button" onclick="exportChecklist()">Export Progress</div>
+              <div class="tab-button" onclick="importChecklist()">Import Progress <input type="file" id="import-file" style="display: none;" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-section">
+        <div class="tab-box2">
+          <div class="tab-buttons2">
+            <div class="tab-button" data-target="epic">Epic</div>
+            <div class="tab-button" data-target="nintendo">Nintendo</div>
+            <div class="tab-button" data-target="playstation">Playstation</div>
+            <div class="tab-button" data-target="steam">Steam</div>
+            <div class="tab-button" data-target="xbox">Xbox</div>
+          </div>
+        </div>
+        
+        <!-- Platform Tabs -->
+        <div class="content active" id="epic">
+          <h2>Epic Games</h2>
+          <form class="add-form" data-platform="epic">
+            <input type="text" placeholder="Add game title" required />
+            <select>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+          <div id="epic-filters" class="tab-buttons2"></div>
+          <div class="progress" id="epic-progress">Completed 0 / 0</div>
+          <div class="scrollable-list">
+            <ul id="epic-games"></ul>
+          </div>
+        </div>
+
+        <div class="content" id="nintendo">
+          <h2>Nintendo</h2>
+          <form class="add-form" data-platform="nintendo">
+            <input type="text" placeholder="Add game title" required />
+            <select>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+          <div class="progress" id="nintendo-progress">Completed 0 / 0</div>
+          <div class="scrollable-list">
+            <ul id="nintendo-games"></ul>
+          </div>
+        </div>
+
+        <div class="content" id="playstation">
+          <h2>Playstation</h2>
+          <form class="add-form" data-platform="playstation">
+            <input type="text" placeholder="Add game title" required />
+            <select>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+          <div class="progress" id="playstation-progress">Completed 0 / 0</div>
+          <div class="scrollable-list">
+            <ul id="playstation-games"></ul>
+          </div>
+        </div>
+
+        <div class="content" id="steam">
+          <h2>Steam</h2>
+          <form class="add-form" data-platform="steam">
+            <input type="text" placeholder="Add game title" required />
+            <select>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+          <div class="progress" id="steam-progress">Completed 0 / 0</div>
+          <div class="scrollable-list">
+            <ul id="steam-games"></ul>
+          </div>
+        </div>
+
+        <div class="content" id="xbox">
+          <h2>Xbox</h2>
+          <form class="add-form" data-platform="xbox">
+            <input type="text" placeholder="Add game title" required />
+            <select>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+          <div class="progress" id="xbox-progress">Completed 0 / 0</div>
+          <div class="scrollable-list">
+            <ul id="xbox-games"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.target;
+          if (!target) return;
+
+          document.querySelectorAll(".tab-button").forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          document.querySelectorAll(".content").forEach((c) => c.classList.remove("active"));
+          document.getElementById(target).classList.add("active");
+        });
+      });
+
+      function updateProgress(platform) {
+        const list = document.getElementById(`${platform}-games`);
+        const items = list.querySelectorAll("li");
+        const completed = list.querySelectorAll(".tagCompleted").length;
+        const progress = document.getElementById(`${platform}-progress`);
+        progress.textContent = `Completed ${completed} / ${items.length}`;
+      }
+
+      document.querySelectorAll(".add-form").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          const platform = form.dataset.platform;
+          const titleInput = form.querySelector("input");
+          const statusSelect = form.querySelector("select");
+          const gameList = document.getElementById(`${platform}-games`);
+
+          const title = titleInput.value.trim();
+          const status = statusSelect.value;
+          if (!title) return;
+
+          const li = document.createElement("li");
+          const span = document.createElement("span");
+          span.textContent = title;
+
+          const tag = document.createElement("span");
+          tag.classList.add("tag", `tag${status.replace(/\s/g, '')}`);
+          tag.textContent = status;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "Remove";
+          removeBtn.className = "remove-button";
+          removeBtn.addEventListener("click", () => {
+            li.remove();
+            updateProgress(platform);
+          });
+
+          li.appendChild(span);
+          li.appendChild(tag);
+          li.appendChild(removeBtn);
+
+          gameList.appendChild(li);
+          titleInput.value = "";
+          updateProgress(platform);
+        });
+      });
+
+      const platforms = ["epic", "nintendo", "playstation", "steam", "xbox"];
+      const statuses = ["All", "Completed", "Not Started", "In Progress", "On Hold"];
+
+      platforms.forEach((platform) => {
+        const filterContainer = document.createElement("div");
+        filterContainer.id = `${platform}-filters`;
+        filterContainer.className = "tab-buttons2";
+        const container = document.getElementById(`${platform}-games`).parentElement;
+        container.insertBefore(filterContainer, container.firstChild);
+
+        statuses.forEach((status) => {
+          const btn = document.createElement("div");
+          btn.className = "tab-button";
+          btn.textContent = status;
+          btn.addEventListener("click", () => filterGamesByStatus(platform, status));
+          filterContainer.appendChild(btn);
+        });
+      });
+
+      function filterGamesByStatus(platform, status) {
+        const list = document.getElementById(`${platform}-games`);
+        const items = list.querySelectorAll("li");
+
+        items.forEach((item) => {
+          const tag = item.querySelector(".tag");
+          const classList = tag?.classList || [];
+          const currentStatus = classList.contains("tagCompleted") ? "Completed" :
+                                classList.contains("tagNotStarted") ? "Not Started" :
+                                classList.contains("tagInProgress") ? "In Progress" :
+                                classList.contains("tagOnHold") ? "On Hold" : "";
+
+          item.style.display = (status === "All" || currentStatus === status) ? "" : "none";
+        });
+
+        document.querySelectorAll(`#${platform}-filters .tab-button`).forEach((btn) => {
+          btn.classList.remove("active");
+          if (btn.textContent === status) btn.classList.add("active");
+        });
+      }
+
+      function exportChecklist() {
+        const data = {};
+        platforms.forEach((platform) => {
+          const items = document.querySelectorAll(`#${platform}-games li`);
+          data[platform] = Array.from(items).map((item) => {
+            const tag = item.querySelector(".tag");
+            const classList = tag?.classList || [];
+            const status = classList.contains("tagCompleted") ? "Completed" :
+                           classList.contains("tagNotStarted") ? "Not Started" :
+                           classList.contains("tagInProgress") ? "In Progress" :
+                           "OnHold";
+
+            return {
+              title: item.querySelector("span").textContent,
+              status
+            };
+          });
+        });
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "game-backlog.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importChecklist() {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "application/json";
+        fileInput.style.display = "none";
+
+        fileInput.addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const data = JSON.parse(e.target.result);
+              platforms.forEach((platform) => {
+                const list = document.getElementById(`${platform}-games`);
+                list.innerHTML = "";
+                (data[platform] || []).forEach((game) => {
+                  const li = document.createElement("li");
+                  const span = document.createElement("span");
+                  span.textContent = game.title;
+
+                  const tag = document.createElement("span");
+                  tag.classList.add("tag", `tag${game.status.replace(/\s/g, '')}`);
+                  tag.textContent = game.status;
+
+                  const removeBtn = document.createElement("button");
+                  removeBtn.textContent = "Remove";
+                  removeBtn.className = "remove-button";
+                  removeBtn.addEventListener("click", () => {
+                    li.remove();
+                    updateProgress(platform);
+                  });
+
+                  li.appendChild(span);
+                  li.appendChild(tag);
+                  li.appendChild(removeBtn);
+                  list.appendChild(li);
+                });
+                updateProgress(platform);
+              });
+              alert("Game backlog imported successfully.");
+            } catch {
+              alert("Invalid file format.");
+            }
+          };
+
+          reader.readAsText(file);
+        });
+
+        document.body.appendChild(fileInput);
+        fileInput.click();
+      }
+    </script>
+  </body>
+</html>
