@@ -359,20 +359,22 @@
          <!-- Stats -->
         <div class="content" id="stats">
           <h2>Game Status Overview</h2>
-          <div class="stats-layout">
-            <div class="stats-text">
-              <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
-              <div id="statusBreakdown"></div>
-             <div style="margin-top: 20px;">
-              <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
-              <div id="platformBreakdown"></div>
-            </div>
-            </div>
+          <div class="scrollable-list">
             <div class="stats-chart">
-              <canvas id="statusChart" style="max-width: 250px; max-height: 250px;"></canvas>
+            	<canvas id="statusChart" style="max-width: 250px; max-height: 250px;"></canvas>
+            </div>
+              <div class="stats-layout">
+                <div class="stats-text">
+                  <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
+                  <div id="statusBreakdown"></div>
+                 <div style="margin-top: 20px;">
+                  <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
+                  <div id="platformBreakdown"></div>
+                </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
         
          <!-- Platform Tabs -->
         <div class="content active" id="epic">
@@ -699,7 +701,7 @@
         document.getElementById("totalGames").innerHTML = `Total Games: <span style="color: #aaa">${totalGames}</span>`
         
         const percentCompleted = totalGames ? ((statusCounts.Completed / totalGames) * 100).toFixed(1) : 0;
-		document.getElementById("totalGames").innerHTML += `<br>Completed: <span style="color: #aaa">${percentCompleted}%</span></span>`;
+		document.getElementById("totalGames").innerHTML += `<br>Completed: <span style="color: #aaa">${percentCompleted}%</span>`;
 
         const statusLabels = {
           Completed: "Completed",
@@ -710,7 +712,7 @@
 
         const breakdownHTML = Object.entries(statusCounts).map(([key, count]) => {
           const percent = totalGames ? ((count / totalGames) * 100).toFixed(1) : 0;
-          return `<div><strong>${statusLabels[key]}:</strong> ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
+          return `<div>${statusLabels[key]}: ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
         }).join("");
 
         document.getElementById("statusBreakdown").innerHTML = breakdownHTML;
@@ -743,7 +745,7 @@
 
           const percent = total ? ((completed / total) * 100).toFixed(1) : "0.0";
           const name = platform.charAt(0).toUpperCase() + platform.slice(1);
-          platformHTML += `<div><strong>${name}:</strong> ${completed} / ${total} <span style="color: #aaa">(${percent}%)</span></div>`;
+          platformHTML += `<div>${name}: ${completed} / ${total} <span style="color: #aaa">(${percent}%)</span></div>`;
         });
 
         document.getElementById("platformBreakdown").innerHTML = platformHTML;
