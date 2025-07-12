@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gamelog</title>
     <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
       body {
         font-family: sans-serif;
+        font-size: clamp(14px, 2vw, 16px);
         margin: 20px;
         background: #121212;
         color: #ddd;
@@ -19,19 +26,26 @@
         border-radius: 8px;
       }
 
+      /* Container & Layout */
       .content-container {
-        display: flex;
-        gap: 20px;
-        max-width: 1280px;
-        margin: 60px auto 0;
-      }
+      display: flex;
+      flex-direction: row; /* horizontal layout by default */
+      align-items: flex-start;
+      gap: 20px;
+      max-width: 1280px;
+      width: 100%;
+      margin: 60px auto 0;
+      padding: 0 10px;
+    }
 
+      /* Content */
       .content {
         display: none;
-        border: 0px solid #444;
+        border: none;
         padding: 20px;
         background: #212121;
         border-radius: 8px;
+        width: 100%;
         max-width: 1280px;
         margin-left: auto;
         margin-right: auto;
@@ -54,8 +68,35 @@
         margin: 5px 0;
       }
 
+      input[type="checkbox"]:checked + label {
+        text-decoration: line-through;
+        color: #555;
+      }
+      
+      input[type="number"].year-input {
+        background: #1a1a1a;
+        color: #ccc;
+        border: none;
+        padding: 6px 8px;
+        border-radius: 6px;
+        width: 80px;
+        font-size: clamp(0.9em, 1.5vw, 0.95em);
+        margin-left: 10px;
+      }
+      
+      select.year-input {
+        background: #1a1a1a;
+        color: #ccc;
+        border: none;
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: clamp(0.9em, 1.5vw, 0.95em);
+        margin-left: 10px;
+      }
+
+      /* Tags */
       .tag {
-        font-size: 0.9em;
+        font-size: clamp(0.8em, 1.5vw, 0.95em);
         padding: 4px 8px;
         border-radius: 8px;
         display: inline-block;
@@ -90,21 +131,49 @@
         word-wrap: break-word;
       }
 
+      .tagDLC {
+        background: #f7bf00;
+      }
+
+      /* Sidebar Styling */
+      .sidebar-wrapper {
+        width: 100%;
+        max-width: 324px;
+        height: 100%;
+        max-height: 496px;
+        flex-shrink: 0;
+      }
+
       .sidebar {
-        text-align: center;
         background: #212121;
         border-radius: 8px;
         padding: 20px;
-        width: 324;
-        height: 496;
-        flex-shrink: 0;
+        width: 100%;
         color: #ccc;
-        font-size: 0.95em;
-        margin-bottom: 20px;
+        font-size: clamp(0.9em, 1.5vw, 0.95em);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .profile-bg {
+        width: 50%;
+        height: 50%;
+        aspect-ratio: 1 / 1;
+        background-image: url("https://cdn.discordapp.com/avatars/474408288914505738/62c637c9587dd2b5d501e2a57ca326b7.webp?size=512");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      
+      .sidebar h2 {
+      	margin-bottom: 0px;
       }
 
       .sidebar h3 {
-        margin-top: 20;
+        margin-top: 20px;
         color: #a0a0a0;
       }
 
@@ -116,20 +185,12 @@
         text-decoration: underline;
       }
 
-      .profile-bg {
-        width: 100%;
-        height: 100%;
-        background-image: url("https://cdn.discordapp.com/avatars/474408288914505738/62c637c9587dd2b5d501e2a57ca326b7.webp?size=512");
-        background-size: 75% 50%;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 8px;
-      }
-
+      /* Tabs & Buttons */
       .tab-box {
         background: #212121;
         border-radius: 8px;
         padding: 10px;
+        margin-top: 20px;
       }
 
       .tab-box2 {
@@ -143,6 +204,7 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+        width: 100%;
       }
 
       .tab-buttons2 {
@@ -150,6 +212,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         gap: 8px;
+        overflow-x: auto;
       }
 
       .tab-button {
@@ -160,6 +223,7 @@
         text-align: center;
         cursor: pointer;
         transition: background 0.2s;
+        flex-shrink: 0;
       }
 
       .tab-button:hover,
@@ -182,8 +246,25 @@
 
       .content-section {
         flex-grow: 1;
+        width: 100%;
       }
 
+      /* Responsive Layout */
+      @media (max-width: 768px) {
+        .content-container {
+          flex-direction: column;
+        }
+        
+        .sidebar-wrapper {
+        margin-bottom: 75px;
+        }
+
+        .sidebar-wrapper,
+        .content-section {
+          width: 100%;
+        }
+      }
+      
       .add-form {
         margin: 20px 0;
         display: flex;
@@ -221,21 +302,21 @@
         background: #ff5c5c;
         color: #fff;
       }
-    </style>
+</style>
   </head>
-      <body>
+  <body>
     <h1>Gamelog</h1>
     <div class="content-container">
       <div class="sidebar-wrapper">
         <div class="sidebar">
-          <div class="profile-bg">
-            <h2> Lepehn </h2>
-            <h3> @Lepehn </h3>
-          </div>
+          <div class="profile-bg"></div>
+           <h2> Lepehn </h2>
+           <h3> @Lepehn </h3>
         </div>
         <div class="tab-sidebar">
           <div class="tab-box">
             <div class="tab-buttons">
+              <div class="tab-button" data-target="faq">FAQ</div>
               <div class="tab-button" onclick="exportChecklist()">Export Progress</div>
               <div class="tab-button" onclick="importChecklist()">Import Progress <input type="file" id="import-file" style="display: none;" /></div>
             </div>
@@ -252,8 +333,7 @@
             <div class="tab-button" data-target="xbox">Xbox</div>
           </div>
         </div>
-        
-        <!-- Platform Tabs -->
+         <!-- Platform Tabs -->
         <div class="content active" id="epic">
           <h2>Epic Games</h2>
           <form class="add-form" data-platform="epic">
@@ -346,7 +426,8 @@
         </div>
       </div>
     </div>
-        <script>
+    <!-- Script -->
+    <script>
       document.querySelectorAll(".tab-button").forEach((button) => {
         button.addEventListener("click", () => {
           const target = button.dataset.target;
@@ -374,18 +455,17 @@
           const items = document.querySelectorAll(`#${platform}-games li`);
           data[platform] = Array.from(items).map((item) => {
             const tag = item.querySelector(".tag");
-            const classList = tag?.classList || [];
-            const status = classList.contains("tagCompleted") ? "Completed" :
-                           classList.contains("tagNotStarted") ? "Not Started" :
-                           classList.contains("tagInProgress") ? "In Progress" :
-                           "On Hold";
+            const yearSelect = item.querySelector('select.year-input');
+            const status = tag?.value || "OnHold";
 
             return {
               title: item.querySelector("span").textContent,
-              status
+              status,
+              year: yearSelect?.value || ""
             };
           });
         });
+        data.prefix = "gameBacklog";
         localStorage.setItem("gameBacklog", JSON.stringify(data));
       }
 
@@ -400,7 +480,7 @@
             list.innerHTML = "";
             const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
             sortedGames.forEach((game) => {
-              const li = createGameItem(platform, game.title, game.status);
+              const li = createGameItem(platform, game.title, game.status, game.year);
               list.appendChild(li);
             });
             updateProgress(platform);
@@ -410,7 +490,7 @@
         }
       }
 
-      function createGameItem(platform, title, status) {
+      function createGameItem(platform, title, status, year = "") {
         const li = document.createElement("li");
         const span = document.createElement("span");
         span.textContent = title;
@@ -424,10 +504,35 @@
           if (opt === status.replace(/\s/g, '')) option.selected = true;
           tag.appendChild(option);
         });
+
+        const yearSelect = document.createElement("select");
+        yearSelect.classList.add("year-input");
+        yearSelect.style.marginLeft = "10px";
+        yearSelect.style.display = (status === "Completed") ? "inline-block" : "none";
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Year";
+        yearSelect.appendChild(defaultOption);
+
+        // Add year options from 2025 to 1970
+        for (let y = 2025; y >= 1970; y--) {
+          const option = document.createElement("option");
+          option.value = y;
+          option.textContent = y;
+          if (String(y) === year) option.selected = true;
+          yearSelect.appendChild(option);
+        }
+
         tag.addEventListener("change", () => {
           tag.className = "tag";
           tag.classList.add(`tag${tag.value}`);
+          yearSelect.style.display = (tag.value === "Completed") ? "inline-block" : "none";
           updateProgress(platform);
+          saveToLocalStorage();
+      	});
+
+        yearSelect.addEventListener("change", () => {
           saveToLocalStorage();
         });
 
@@ -442,6 +547,7 @@
 
         li.appendChild(span);
         li.appendChild(tag);
+        li.appendChild(yearSelect);
         li.appendChild(removeBtn);
         return li;
       }
@@ -523,15 +629,21 @@
       }
 
       function exportChecklist() {
-        const data = {};
+        const data = { 
+          prefix: "gameBacklog" // Add this line
+        };
+
         platforms.forEach((platform) => {
           const items = document.querySelectorAll(`#${platform}-games li`);
           data[platform] = Array.from(items).map((item) => {
             const tag = item.querySelector(".tag");
+            const yearSelect = item.querySelector('select.year-input');
             const status = tag?.value || "OnHold";
+
             return {
               title: item.querySelector("span").textContent,
-              status
+              status,
+              year: yearSelect?.value || ""
             };
           });
         });
@@ -559,16 +671,23 @@
           reader.onload = (e) => {
             try {
               const data = JSON.parse(e.target.result);
+
+              if (data.prefix !== "gameBacklog") {
+                alert(`This checklist file is not for this backlog (found prefix: "${data.prefix || 'none'}"). Import aborted.`);
+                return;
+              }
+
               platforms.forEach((platform) => {
                 const list = document.getElementById(`${platform}-games`);
                 list.innerHTML = "";
                 const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
                 sortedGames.forEach((game) => {
-                  const li = createGameItem(platform, game.title, game.status);
+                  const li = createGameItem(platform, game.title, game.status, game.year);
                   list.appendChild(li);
                 });
                 updateProgress(platform);
               });
+
               saveToLocalStorage();
               alert("Game backlog imported successfully.");
             } catch {
