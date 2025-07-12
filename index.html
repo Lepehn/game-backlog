@@ -702,7 +702,8 @@
         };
 
         const breakdownHTML = Object.entries(statusCounts).map(([key, count]) => {
-          return `<div><strong>${statusLabels[key]}:</strong> ${count}</div>`;
+          const percent = totalGames ? ((count / totalGames) * 100).toFixed(1) : 0;
+          return `<div><strong>${statusLabels[key]}:</strong> ${count} (${percent}%)</div>`;
         }).join("");
 
         document.getElementById("statusBreakdown").innerHTML = breakdownHTML;
