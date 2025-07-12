@@ -361,11 +361,11 @@
           <h2>Game Status Overview</h2>
           <div class="stats-layout">
             <div class="stats-text">
-              <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em; color: #f7bf00;"></div>
-              <div id="statusBreakdown" style="color: #ccc;"></div>
+              <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
+              <div id="statusBreakdown"></div>
              <div style="margin-top: 20px;">
-              <div style="font-weight: bold; color: #f7bf00; margin-bottom: 5px;">Platforms</div>
-              <div id="platformBreakdown" style="color: #aaa;"></div>
+              <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
+              <div id="platformBreakdown"></div>
             </div>
             </div>
             <div class="stats-chart">
@@ -696,10 +696,10 @@
         });
 
         const totalGames = Object.values(statusCounts).reduce((a, b) => a + b, 0);
-        document.getElementById("totalGames").textContent = `Total Games: ${totalGames}`;
+        document.getElementById("totalGames").innerHTML = `Total Games: <span style="color: #aaa">${totalGames}</span>`
         
         const percentCompleted = totalGames ? ((statusCounts.Completed / totalGames) * 100).toFixed(1) : 0;
-		document.getElementById("totalGames").innerHTML += `<br><span style="color: #FBE83A;">Completed: ${percentCompleted}%</span>`;
+		document.getElementById("totalGames").innerHTML += `<br>Completed: <span style="color: #aaa">${percentCompleted}%</span></span>`;
 
         const statusLabels = {
           Completed: "Completed",
@@ -710,7 +710,7 @@
 
         const breakdownHTML = Object.entries(statusCounts).map(([key, count]) => {
           const percent = totalGames ? ((count / totalGames) * 100).toFixed(1) : 0;
-          return `<div><strong>${statusLabels[key]}:</strong> ${count} (${percent}%)</div>`;
+          return `<div><strong>${statusLabels[key]}:</strong> ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
         }).join("");
 
         document.getElementById("statusBreakdown").innerHTML = breakdownHTML;
@@ -743,10 +743,34 @@
 
           const percent = total ? ((completed / total) * 100).toFixed(1) : "0.0";
           const name = platform.charAt(0).toUpperCase() + platform.slice(1);
-          platformHTML += `<div><strong>${name}:</strong> ${completed} / ${total} (${percent}%)</div>`;
+          platformHTML += `<div><strong>${name}:</strong> ${completed} / ${total} <span style="color: #aaa">(${percent}%)</span></div>`;
         });
 
         document.getElementById("platformBreakdown").innerHTML = platformHTML;
+        
+        // Yearly breakdown of completed games
+        const yearCounts = {};
+        platforms.forEach((platform) => {
+          const tags = document.querySelectorAll(`#${platform}-games .tag`);
+          tags.forEach((tag) => {
+            if (tag.value === "Completed") {
+              const year = tag.nextElementSibling?.value || "Unknown";
+              if (!yearCounts[year]) yearCounts[year] = 0;
+              yearCounts[year]++;
+            }
+          });
+        });
+
+        const totalCompleted = statusCounts.Completed;
+        let yearBreakdownHTML = "<h3 style='margin-top: 20px;'>Completed Games by Year</h3>";
+        Object.entries(yearCounts)
+          .sort((a, b) => b[1] - a[1]) // Sort by most completed first
+          .forEach(([year, count]) => {
+            const percent = ((count / totalCompleted) * 100).toFixed(1);
+            yearBreakdownHTML += `<div>${year}: ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
+          });
+
+        document.getElementById("statusBreakdown").innerHTML += yearBreakdownHTML;        
 
         // Destroy old chart if it exists
         if (statusChart) {
@@ -850,4 +874,3 @@
     </script>
   </body>
 </html>
-
