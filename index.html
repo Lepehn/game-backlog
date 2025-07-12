@@ -363,6 +363,10 @@
             <div class="stats-text">
               <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em; color: #f7bf00;"></div>
               <div id="statusBreakdown" style="color: #ccc;"></div>
+             <div style="margin-top: 20px;">
+              <div style="font-weight: bold; color: #f7bf00; margin-bottom: 5px;">Platforms</div>
+              <div id="platformBreakdown" style="color: #aaa;"></div>
+            </div>
             </div>
             <div class="stats-chart">
               <canvas id="statusChart" style="max-width: 250px; max-height: 250px;"></canvas>
@@ -693,6 +697,9 @@
 
         const totalGames = Object.values(statusCounts).reduce((a, b) => a + b, 0);
         document.getElementById("totalGames").textContent = `Total Games: ${totalGames}`;
+        
+        const percentCompleted = totalGames ? ((statusCounts.Completed / totalGames) * 100).toFixed(1) : 0;
+		document.getElementById("totalGames").innerHTML += `<br><span style="color: #FBE83A;">Completed: ${percentCompleted}%</span>`;
 
         const statusLabels = {
           Completed: "Completed",
@@ -723,6 +730,23 @@
             borderWidth: 2,
           }]
         };
+        
+        let platformHTML = "";
+
+        platforms.forEach(platform => {
+          const list = document.querySelectorAll(`#${platform}-games li`);
+          const total = list.length;
+          const completed = Array.from(list).filter(li => {
+            const tag = li.querySelector(".tag");
+            return tag && tag.value === "Completed";
+          }).length;
+
+          const percent = total ? ((completed / total) * 100).toFixed(1) : "0.0";
+          const name = platform.charAt(0).toUpperCase() + platform.slice(1);
+          platformHTML += `<div><strong>${name}:</strong> ${completed} / ${total} (${percent}%)</div>`;
+        });
+
+        document.getElementById("platformBreakdown").innerHTML = platformHTML;
 
         // Destroy old chart if it exists
         if (statusChart) {
