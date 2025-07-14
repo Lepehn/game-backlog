@@ -330,6 +330,87 @@
         justify-content: center;
         align-items: center;
       }
+      
+    body.light-mode {
+      background: #EDEDED;
+      color: #121212;
+    }
+
+    body.light-mode .sidebar,
+    body.light-mode .tab-box,
+    body.light-mode .tab-box2,
+    body.light-mode .content {
+      background: #DEDEDE;
+      color: #121212;
+    }
+    
+    body.light-mode .content ul {
+        color: #212121;
+      }
+
+    body.light-mode .tab-button {
+      background: #D5D5D5;
+      color: #222;
+    }
+
+    body.light-mode .tab-button:hover,
+    body.light-mode .tab-button.active {
+      background: #C7C7C7;
+      color: 3C09B3;
+    }
+
+	body.light-mode .add-form button {
+        background: #C7C7C7;
+        color: 3C09B3;
+        cursor: pointer;
+      }
+      
+    body.light-mode .remove-button {
+      background: #ddd;
+      color: #222;
+    }
+
+    body.light-mode .remove-button:hover {
+      background: #ff5c5c;
+      color: #fff;
+    }
+    
+    body.light-mode .tagCompleted {
+      background: #4ADE80;
+      color: #000;
+    }
+    body.light-mode .tagNotStarted {
+      background: #949494;
+      color: #000;
+    }
+    body.light-mode .tagInProgress {
+      background: #0EA5E9;
+      color: #000;
+    }
+    body.light-mode .tagOnHold {
+      background: #84CC16;
+      color: #000;
+    }
+
+    body.light-mode .tagNote {
+      background: #eaeaea;
+      color: #333;
+    }
+
+    body.light-mode .profile-bg {
+      border: 2px solid #dcdcdc;
+    }
+
+    body.light-mode select,
+    body.light-mode input {
+      background: #E5E5E5;
+      color: #121212;
+      border: 1px solid #ccc;
+    }
+
+    body.light-mode .scrollable-list {
+      scrollbar-color: #ccc #E5E5E5;
+    }
 </style>
   </head>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -345,6 +426,7 @@
         <div class="tab-sidebar">
           <div class="tab-box">
             <div class="tab-buttons">
+              <div class="tab-button" onclick="toggleTheme()">☀️ Light /🌙 Dark Mode</div>
               <div class="tab-button" data-target="stats">Stats</div>
               <div class="tab-button" onclick="exportChecklist()">Export Progress</div>
               <div class="tab-button" onclick="importChecklist()">Import Progress <input type="file" id="import-file" style="display: none;" /></div>
@@ -878,7 +960,18 @@
         document.body.appendChild(fileInput);
         fileInput.click();
       }
+      
+      function toggleTheme() {
+        const body = document.body;
+        const toggleButton = document.querySelector(".tab-button[onclick='toggleTheme()']");
 
+        body.classList.toggle("light-mode");
+        const isLight = body.classList.contains("light-mode");
+
+        localStorage.setItem("theme", isLight ? "light" : "dark");
+        toggleButton.textContent = isLight ? "🌞 Light / Dark Mode" : "🌙 Light / Dark Mode";
+      }
+      
       window.addEventListener("DOMContentLoaded", loadFromLocalStorage);
     </script>
   </body>
