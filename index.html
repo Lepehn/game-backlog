@@ -94,6 +94,16 @@
         font-size: clamp(0.9em, 1.5vw, 0.95em);
         margin-left: 10px;
       }
+      
+      select.month-input {
+        background: #1a1a1a;
+        color: #ccc;
+        border: none;
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: clamp(0.9em, 1.5vw, 0.95em);
+        margin-left: 10px;
+      }
 
       /* Tags */
       .tag {
@@ -597,7 +607,7 @@
           data[platform] = Array.from(items).map((item) => {
             const tag = item.querySelector(".tag");
             const yearSelect = item.querySelector('select.year-input');
-            const monthSelect = item.querySelector('select:nth-of-type(2)');
+            const monthSelect = item.querySelector('select.month-input');
             const rating = item.getAttribute("data-rating") || "";
             const status = tag?.value || "OnHold";
 
@@ -657,7 +667,7 @@
         yearSelect.style.display = (status === "Completed") ? "inline-block" : "none";
         
         const monthSelect = document.createElement("select");
-        monthSelect.classList.add("year-input");
+        monthSelect.classList.add("month-input");
         monthSelect.style.marginLeft = "10px";
         monthSelect.style.display = (status === "Completed") ? "inline-block" : "none";
 
@@ -694,6 +704,10 @@
       	});
 
         yearSelect.addEventListener("change", () => {
+          saveToLocalStorage();
+        });
+        
+        monthSelect.addEventListener("change", () => {
           saveToLocalStorage();
         });
 
