@@ -474,6 +474,9 @@
                   <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
                   <div id="statusBreakdown"></div>
                  <div style="margin-top: 20px;">
+                 <div id="completed-by-year" style="margin-top: 20px;">
+  <h2>Completed Games by Year</h2>
+</div>
                   <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
                   <div id="platformBreakdown"></div>
                 </div>
@@ -878,31 +881,7 @@
           platformHTML += `<div>${name}: ${completed} / ${total} <span style="color: #aaa">(${percent}%)</span></div>`;
         });
 
-        document.getElementById("platformBreakdown").innerHTML = platformHTML;
-        
-        // Yearly breakdown of completed games
-        const yearCounts = {};
-        platforms.forEach((platform) => {
-          const tags = document.querySelectorAll(`#${platform}-games .tag`);
-          tags.forEach((tag) => {
-            if (tag.value === "Completed") {
-              const year = tag.nextElementSibling?.value || "Unknown";
-              if (!yearCounts[year]) yearCounts[year] = 0;
-              yearCounts[year]++;
-            }
-          });
-        });
-
-        const totalCompleted = statusCounts.Completed;
-        let yearBreakdownHTML = "<h3 style='margin-top: 20px;'>Completed Games by Year</h3>";
-        Object.entries(yearCounts)
-          .sort((a, b) => b[1] - a[1]) // Sort by most completed first
-          .forEach(([year, count]) => {
-            const percent = ((count / totalCompleted) * 100).toFixed(1);
-            yearBreakdownHTML += `<div>${year}: ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
-          });
-
-        document.getElementById("statusBreakdown").innerHTML += yearBreakdownHTML;        
+        document.getElementById("platformBreakdown").innerHTML = platformHTML;     
 
         // Destroy old chart if it exists
         if (statusChart) {
@@ -927,6 +906,100 @@
         });
         
         updateRatingsTab();
+        updateCompletedByYear();
+      }
+      
+      function updateCompletedByYear() {
+        const container = document.getElementById("completed-by-year");
+        container.innerHTML = "<h3>Completed Games by Year</h3>";
+
+        const gamesByYearMonth = {};
+        const yearCounts = {};
+
+        // Gather all completed games into year/month and count per year
+        platforms.forEach(platform => {
+          const listItems = document.querySelectorAll(`#${platform}-games li`);
+          listItems.forEach(li => {
+            const tag = li.querySelector(".tag");
+            if (tag?.value !== "Completed") return;
+
+            const selects = li.querySelectorAll("select");
+            const yearSelect = selects[1];
+            const monthSelect = selects[2];
+
+            const year = yearSelect?.value || "Unknown";
+            const month = monthSelect?.value || "Unknown";
+            const title = li.querySelector("span")?.textContent || "Untitled";
+
+            if (!gamesByYearMonth[year]) gamesByYearMonth[year] = {};
+            if (!gamesByYearMonth[year][month]) gamesByYearMonth[year][month] = [];
+            gamesByYearMonth[year][month].push(title);
+
+            // Count total completed per year
+            yearCounts[year] = (yearCounts[year] || 0) + 1;
+          });
+        });
+
+        // Compute total completed overall
+        const totalCompleted = Object.values(yearCounts).reduce((a, b) => a + b, 0);
+
+        const years = Object.keys(gamesByYearMonth).sort((a, b) => b - a); // newest first
+
+        years.forEach(year => {
+          const totalThisYear = yearCounts[year];
+          const percentOfAll = totalCompleted ? ((totalThisYear / totalCompleted) * 100).toFixed(1) : "0.0";
+
+          const yearSection = document.createElement("div");
+          yearSection.classList.add("year-section");
+
+          const toggle = document.createElement("button");
+          toggle.className = "year-toggle";
+          toggle.innerHTML = `▶ ${year}: ${totalThisYear} <span style="color:#aaa">(${percentOfAll}%)</span>`;
+          toggle.style.background = "none";
+          toggle.style.border = "none";
+          toggle.style.color = "#ccc";
+          toggle.style.cursor = "pointer";
+          toggle.style.fontSize = "16px";
+          toggle.style.marginTop = "10px";
+
+          const content = document.createElement("div");
+          content.style.display = "none";
+          content.style.marginLeft = "20px";
+
+          const months = Object.keys(gamesByYearMonth[year]).sort((a, b) => {
+            const order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return order.indexOf(a) - order.indexOf(b);
+          });
+
+          months.forEach(month => {
+            const monthGames = gamesByYearMonth[year][month];
+            const count = monthGames.length;
+            const percent = totalThisYear ? ((count / totalThisYear) * 100).toFixed(1) : "0.0";
+
+            const monthDiv = document.createElement("div");
+            monthDiv.innerHTML = `<strong>${month}</strong> <span style="color:#aaa">(${count} - ${percent}%)</span>`;
+            monthDiv.style.marginTop = "10px";
+ 
+            monthGames.forEach(game => {
+              const gameItem = document.createElement("div");
+              gameItem.textContent = game;
+              gameItem.style.marginLeft = "10px";
+              monthDiv.appendChild(gameItem);
+            });
+
+            content.appendChild(monthDiv);
+          });
+
+          toggle.addEventListener("click", () => {
+            const isVisible = content.style.display === "block";
+            content.style.display = isVisible ? "none" : "block";
+            toggle.innerHTML = `▶ ${year}: ${totalThisYear} <span style="color:#aaa">(${percentOfAll}%)</span>`;
+          });
+
+          yearSection.appendChild(toggle);
+          yearSection.appendChild(content);
+          container.appendChild(yearSection);
+        });
       }
       
       function updateRatingsTab() {
