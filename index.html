@@ -1088,12 +1088,14 @@
           data[platform] = Array.from(items).map((item) => {
             const tag = item.querySelector(".tag");
             const yearSelect = item.querySelector('select.year-input');
+            const monthSelect = item.querySelector('select.month-input');
             const status = tag?.value || "OnHold";
 
             return {
               title: item.querySelector("span").textContent,
               status,
-              year: yearSelect?.value || ""
+              year: yearSelect?.value || "",
+              month: monthSelect?.value || ""
             };
           });
         });
@@ -1132,7 +1134,7 @@
                 list.innerHTML = "";
                 const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
                 sortedGames.forEach((game) => {
-                  const li = createGameItem(platform, game.title, game.status, game.year);
+                  const li = createGameItem(platform, game.title, game.status, game.year, game.month);
                   list.appendChild(li);
                 });
                 updateProgress(platform);
