@@ -1095,7 +1095,8 @@
               title: item.querySelector("span").textContent,
               status,
               year: yearSelect?.value || "",
-              month: monthSelect?.value || ""
+              month: monthSelect?.value || "",
+              rating: item.getAttribute("data-rating") || ""
             };
           });
         });
@@ -1134,7 +1135,8 @@
                 list.innerHTML = "";
                 const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
                 sortedGames.forEach((game) => {
-                  const li = createGameItem(platform, game.title, game.status, game.year, game.month);
+                  const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating);
+                  li.setAttribute("data-rating", game.rating || "");
                   list.appendChild(li);
                 });
                 updateProgress(platform);
