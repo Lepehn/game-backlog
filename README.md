@@ -20,6 +20,7 @@ A simple and stylish HTML-based game backlog tracker that lets you manage your c
 - 📈 View stats with a doughnut chart, total game count, and status breakdown
 - 🎯 See percentage completed overall and by platform
 - 🖱️ Tab-based navigation for different gaming platforms
+- 👤 Profile customization, display name, username, profile picture
 
 ## 🛠 How to Use
 
