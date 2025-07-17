@@ -1,1174 +1,194 @@
-
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="google-site-verification" content="TM2JLp2z2ivvAbxCRiY7ekyg7shRkm4LJ23ywpbje1U" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gamelog</title>
-    <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gamelog Tracker</title>
 
-      body {
-        font-family: sans-serif;
-        font-size: clamp(14px, 2vw, 16px);
-        margin: 20px;
-        background: #121212;
-        color: #ddd;
-      }
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-      h1 {
-        text-align: center;
-        margin: 0 auto 20px;
-        max-width: 1280px;
-        border-radius: 8px;
-      }
-
-      /* Container & Layout */
-      .content-container {
-      display: flex;
-      flex-direction: row; /* horizontal layout by default */
-      align-items: flex-start;
-      gap: 20px;
-      max-width: 1280px;
-      width: 100%;
-      margin: 60px auto 0;
-      padding: 0 10px;
-    }
-
-      /* Content */
-      .content {
-        display: none;
-        border: none;
-        padding: 20px;
-        background: #212121;
-        border-radius: 8px;
-        width: 100%;
-        max-width: 1280px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .content.active {
-        display: block;
-      }
-
-      .content ul {
-        color: #a0a0a0;
-      }
-
-      ul {
-        list-style: none;
-        padding: 0;
-      }
-
-      li {
-        margin: 5px 0;
-      }
-
-      input[type="checkbox"]:checked + label {
-        text-decoration: line-through;
-        color: #555;
-      }
-      
-      input[type="number"].year-input {
-        background: #1a1a1a;
-        color: #ccc;
-        border: none;
-        padding: 6px 8px;
-        border-radius: 6px;
-        width: 80px;
-        font-size: clamp(0.9em, 1.5vw, 0.95em);
-        margin-left: 10px;
-      }
-      
-      select.year-input {
-        background: #1a1a1a;
-        color: #ccc;
-        border: none;
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: clamp(0.9em, 1.5vw, 0.95em);
-        margin-left: 10px;
-      }
-      
-      select.month-input {
-        background: #1a1a1a;
-        color: #ccc;
-        border: none;
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: clamp(0.9em, 1.5vw, 0.95em);
-        margin-left: 10px;
-      }
-
-      /* Tags */
-      .tag {
-        font-size: clamp(0.8em, 1.5vw, 0.95em);
-        padding: 4px 8px;
-        border-radius: 8px;
-        display: inline-block;
-        margin-left: 10px;
-        color: #121212;
-      }
-
-      .tagCompleted {
-        background: #4ADE80;
-      }
-	    
-      .tagNotStarted {
-        background: #949494;
-      }
-	    
-      .tagInProgress {
-        background: #0EA5E9;
-      }
-	    
-      .tagOnHold {
-        background: #84CC16;
-      }
-	    
-      .tagDropped{
-        background: #EF4444;
-      }    
-
-      .tagNote {
-        color: #aaa;
-        background: #1a1a1a;
-        padding: 4px 8px;
-        border-radius: 8px;
-        display: block;
-        margin-left: 20px;
-        margin-top: 4px;
-        width: fit-content;
-        max-width: 100%;
-        box-sizing: border-box;
-        word-wrap: break-word;
-      }
-
-      .tagDLC {
-        background: #f7bf00;
-      }
-
-      /* Sidebar Styling */
-      .sidebar-wrapper {
-        width: 100%;
-        max-width: 324px;
-        height: 100%;
-        max-height: 496px;
-        flex-shrink: 0;
-      }
-
-      .sidebar {
-        background: #212121;
-        border-radius: 8px;
-        padding: 20px;
-        width: 100%;
-        color: #ccc;
-        font-size: clamp(0.9em, 1.5vw, 0.95em);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .profile-bg {
-        width: 50%;
-        height: 50%;
-        aspect-ratio: 1 / 1;
-        background-image: url("https://cdn.discordapp.com/avatars/474408288914505738/62c637c9587dd2b5d501e2a57ca326b7.webp?size=512");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 8px;
-        flex-shrink: 0;
-      }
-      
-      .sidebar h2 {
-      	margin-bottom: 0px;
-      }
-
-      .sidebar h3 {
-        margin-top: 20px;
-        color: #a0a0a0;
-      }
-
-      .sidebar a {
-        color: #88c0d0;
-        text-decoration: none;
-      }
-      .sidebar a:hover {
-        text-decoration: underline;
-      }
-
-      /* Tabs & Buttons */
-      .tab-box {
-        background: #212121;
-        border-radius: 8px;
-        padding: 10px;
-        margin-top: 20px;
-      }
-
-      .tab-box2 {
-        background: #212121;
-        border-radius: 8px;
-        padding: 10px;
-        margin-bottom: 20px;
-      }
-
-      .tab-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-
-      .tab-buttons2 {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
-        overflow-x: auto;
-      }
-
-      .tab-button {
-        padding: 10px;
-        background: #2a2a2a;
-        color: #ccc;
-        border-radius: 6px;
-        text-align: center;
-        cursor: pointer;
-        transition: background 0.2s;
-        flex-shrink: 0;
-      }
-
-      .tab-button:hover,
-      .tab-button.active {
-        background: #383838;
-        color: #f7bf00;
-      }
-
-      .scrollable-list {
-        margin-top: 12px;
-        max-height: 400px;
-        overflow-y: auto;
-        padding-right: 8px;
-        scrollbar-color: #383838 #1a1a1a;
-      }
-      
-      .progress {
-      	padding-top: 8px;
-      }
-
-      .content-section {
-        flex-grow: 1;
-        width: 100%;
-      }
-
-      /* Responsive Layout */
-      @media (max-width: 768px) {
-        .content-container {
-          flex-direction: column;
-        }
-        
-        .sidebar-wrapper {
-        margin-bottom: 75px;
-        }
-
-        .sidebar-wrapper,
-        .content-section {
-          width: 100%;
-        }
-      }
-      
-      .add-form {
-        margin: 20px 0;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-      .add-form input,
-      .add-form select,
-      .add-form button {
-        padding: 8px;
-        border-radius: 6px;
-        border: none;
-      }
-      .add-form input,
-      .add-form select {
-        background: #1a1a1a;
-        color: #ccc;
-      }
-      .add-form button {
-        background: #383838;
-        color: #f7bf00;
-        cursor: pointer;
-      }
-
-      .remove-button {
-        margin-left: 10px;
-        background: #444;
-        color: #ccc;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .remove-button:hover {
-        background: #ff5c5c;
-        color: #fff;
-      }
-      
-      .stats-layout {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-
-      .stats-text {
-        flex: 1;
-        min-width: 200px;
-      }
-
-      .stats-chart {
-        flex-shrink: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      
-    body.light-mode {
-      background: #EDEDED;
-      color: #121212;
-    }
-
-    body.light-mode .sidebar,
-    body.light-mode .tab-box,
-    body.light-mode .tab-box2,
-    body.light-mode .content {
-      background: #DEDEDE;
-      color: #121212;
-    }
-    
-    body.light-mode .content ul {
-        color: #212121;
-      }
-
-    body.light-mode .tab-button {
-      background: #D5D5D5;
-      color: #222;
-    }
-
-    body.light-mode .tab-button:hover,
-    body.light-mode .tab-button.active {
-      background: #C7C7C7;
-      color: 3C09B3;
-    }
-
-	body.light-mode .add-form button {
-        background: #C7C7C7;
-        color: 3C09B3;
-        cursor: pointer;
-      }
-      
-    body.light-mode .remove-button {
-      background: #ddd;
-      color: #222;
-    }
-
-    body.light-mode .remove-button:hover {
-      background: #ff5c5c;
-      color: #fff;
-    }
-    
-    body.light-mode .tagCompleted {
-      background: #4ADE80;
-      color: #000;
-    }
-    body.light-mode .tagNotStarted {
-      background: #949494;
-      color: #000;
-    }
-    body.light-mode .tagInProgress {
-      background: #0EA5E9;
-      color: #000;
-    }
-    body.light-mode .tagOnHold {
-      background: #84CC16;
-      color: #000;
-    }
-
-    body.light-mode .tagNote {
-      background: #eaeaea;
-      color: #333;
-    }
-
-    body.light-mode .profile-bg {
-      border: 2px solid #dcdcdc;
-    }
-
-    body.light-mode select,
-    body.light-mode input {
-      background: #E5E5E5;
-      color: #121212;
-      border: 1px solid #ccc;
-    }
-
-    body.light-mode .scrollable-list {
-      scrollbar-color: #ccc #E5E5E5;
-    }
-</style>
-  </head>
+<body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <body>
-    <h1>Gamelog</h1>
-    <div class="content-container">
-      <div class="sidebar-wrapper">
-        <div class="sidebar">
-          <div class="profile-bg"></div>
-           <h2> Lepehn </h2>
-           <h3> @Lepehn </h3>
-        </div>
-        <div class="tab-sidebar">
-          <div class="tab-box">
-            <div class="tab-buttons">
-              <!--<div class="tab-button" onclick="toggleTheme()">☀️ Light /🌙 Dark Mode</div>-->
-              <div class="tab-button" data-target="ratings">Ratings</div>
-              <div class="tab-button" data-target="stats">Stats</div>
-              <div class="tab-button" onclick="exportChecklist()">Export Progress</div>
-              <div class="tab-button" onclick="importChecklist()">Import Progress <input type="file" id="import-file" style="display: none;" /></div>
-            </div>
+  <h1>Gamelog</h1>
+
+  <div class="content-container">
+    <!-- Sidebar Section -->
+    <div class="sidebar-wrapper">
+      <div class="sidebar">
+        <div class="profile-bg"></div>
+        <h2 id="profile-name">Lepehn</h2>
+        <p id="profile-username">@Lepehn</p>
+        <!-- Edit Profile Button -->
+        <button id="open-profile-modal">Edit Profile</button>
+        
+        <!-- Modal -->
+        <div id="profile-modal" class="modal">
+          <div class="modal-content">
+            <span class="close" id="close-profile-modal">&times;</span>
+            <h2>Edit Profile</h2>
+            <input type="text" id="modal-name" placeholder="Display Name" />
+            <input type="text" id="modal-username" placeholder="Username" />
+            <label>Upload Background Image:</label>
+            <input type="file" id="modal-bg-upload" accept="image/*" />
+            <button id="modal-save">Save Changes</button>
           </div>
         </div>
       </div>
-      <div class="content-section">
-        <div class="tab-box2">
-          <div class="tab-buttons2">
-            <div class="tab-button" data-target="epic">Epic</div>
-            <div class="tab-button" data-target="nintendo">Nintendo</div>
-            <div class="tab-button" data-target="playstation">Playstation</div>
-            <div class="tab-button" data-target="steam">Steam</div>
-            <div class="tab-button" data-target="xbox">Xbox</div>
-          </div>
-        </div>
-        
-         <!-- Ratings -->
-         <div class="content" id="ratings">
-          <h2>Game Ratings</h2>
-          <div class="scrollable-list" id="ratings-list"></div>
-        </div>
-        
-        <!-- Stats -->
-        <div class="content" id="stats">
-          <h2>Game Status Overview</h2>
-          <div class="scrollable-list">
-            <div class="stats-chart">
-            	<canvas id="statusChart" style="max-width: 250px; max-height: 250px;"></canvas>
-            </div>
-              <div class="stats-layout">
-                <div class="stats-text">
-                  <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
-                  <div id="statusBreakdown"></div>
-                 <div style="margin-top: 20px;">
-                 <div id="completed-by-year" style="margin-top: 20px;">
-  <h2>Completed Games by Year</h2>
-</div>
-                  <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
-                  <div id="platformBreakdown"></div>
-                </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        
-         <!-- Platform Tabs -->
-        <div class="content active" id="epic">
-          <h2>Epic Games</h2>
-          <form class="add-form" data-platform="epic">
-            <input type="text" placeholder="Add game title" required />
-            <select>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <button type="submit">Add</button>
-          </form>
-          <div id="epic-filters" class="tab-buttons2"></div>
-          <div class="progress" id="epic-progress">Completed 0 / 0</div>
-          <div class="scrollable-list">
-            <ul id="epic-games"></ul>
-          </div>
-        </div>
 
-        <div class="content" id="nintendo">
-          <h2>Nintendo</h2>
-          <form class="add-form" data-platform="nintendo">
-            <input type="text" placeholder="Add game title" required />
-            <select>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <button type="submit">Add</button>
-          </form>
-          <div class="progress" id="nintendo-progress">Completed 0 / 0</div>
-          <div class="scrollable-list">
-            <ul id="nintendo-games"></ul>
-          </div>
-        </div>
-
-        <div class="content" id="playstation">
-          <h2>Playstation</h2>
-          <form class="add-form" data-platform="playstation">
-            <input type="text" placeholder="Add game title" required />
-            <select>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <button type="submit">Add</button>
-          </form>
-          <div class="progress" id="playstation-progress">Completed 0 / 0</div>
-          <div class="scrollable-list">
-            <ul id="playstation-games"></ul>
-          </div>
-        </div>
-
-        <div class="content" id="steam">
-          <h2>Steam</h2>
-          <form class="add-form" data-platform="steam">
-            <input type="text" placeholder="Add game title" required />
-            <select>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <button type="submit">Add</button>
-          </form>
-          <div class="progress" id="steam-progress">Completed 0 / 0</div>
-          <div class="scrollable-list">
-            <ul id="steam-games"></ul>
-          </div>
-        </div>
-
-        <div class="content" id="xbox">
-          <h2>Xbox</h2>
-          <form class="add-form" data-platform="xbox">
-            <input type="text" placeholder="Add game title" required />
-            <select>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <button type="submit">Add</button>
-          </form>
-          <div class="progress" id="xbox-progress">Completed 0 / 0</div>
-          <div class="scrollable-list">
-            <ul id="xbox-games"></ul>
+      <div class="tab-sidebar">
+        <div class="tab-box">
+          <div class="tab-buttons">
+            <!-- <div class="tab-button" onclick="toggleTheme()">☀️ Light /🌙 Dark Mode</div> -->
+            <div class="tab-button" data-target="ratings">Ratings</div>
+            <div class="tab-button" data-target="stats">Stats</div>
+            <div class="tab-button" onclick="exportChecklist()">Export Progress</div>
+            <div class="tab-button" onclick="importChecklist()">Import Progress <input type="file" id="import-file" style="display: none;" /></div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Script -->
-    <script>
-      document.querySelectorAll(".tab-button").forEach((button) => {
-        button.addEventListener("click", () => {
-          const target = button.dataset.target;
-          if (!target) return;
 
-          document.querySelectorAll(".tab-button").forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          document.querySelectorAll(".content").forEach((c) => c.classList.remove("active"));
-          document.getElementById(target).classList.add("active");
-          
-          if (target === "stats") updateChart();
-        });
-      });
-
-      function updateProgress(platform) {
-        const list = document.getElementById(`${platform}-games`);
-        const items = list.querySelectorAll("li");
-        const completed = list.querySelectorAll(".tagCompleted").length;
-        const progress = document.getElementById(`${platform}-progress`);
-        progress.textContent = `Completed ${completed} / ${items.length}`;
-      }
-
-      function saveToLocalStorage() {
-        const data = {};
-        platforms.forEach((platform) => {
-          const items = document.querySelectorAll(`#${platform}-games li`);
-          data[platform] = Array.from(items).map((item) => {
-            const tag = item.querySelector(".tag");
-            const yearSelect = item.querySelector('select.year-input');
-            const monthSelect = item.querySelector('select.month-input');
-            const rating = item.getAttribute("data-rating") || "";
-            const status = tag?.value || "OnHold";
-
-            return {
-              title: item.querySelector("span").textContent,
-              status,
-              year: yearSelect?.value || "",
-              month: monthSelect?.value || "",
-              rating
-            };
-          });
-        });
-        data.prefix = "gameBacklog";
-        localStorage.setItem("gameBacklog", JSON.stringify(data));
-      }
-
-      function loadFromLocalStorage() {
-        const stored = localStorage.getItem("gameBacklog");
-        if (!stored) return;
-
-        try {
-          const data = JSON.parse(stored);
-          platforms.forEach((platform) => {
-            const list = document.getElementById(`${platform}-games`);
-            list.innerHTML = "";
-            const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
-            sortedGames.forEach((game) => {
-              const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating);
-              list.appendChild(li);
-            });
-            updateProgress(platform);
-            updateChart();
-          });
-        } catch {
-          console.error("Failed to load game backlog from localStorage");
-        }
-      }
-
-      function createGameItem(platform, title, status, year = "", month = "", rating = "") {
-        const li = document.createElement("li");
-        const span = document.createElement("span");
-        span.textContent = title;
-
-        const tag = document.createElement("select");
-        tag.classList.add("tag", `tag${status.replace(/\s/g, '')}`);
-        ["NotStarted", "InProgress", "OnHold", "Completed"].forEach(opt => {
-          const option = document.createElement("option");
-          option.value = opt;
-          option.textContent = opt.replace(/([A-Z])/g, ' $1').trim();
-          if (opt === status.replace(/\s/g, '')) option.selected = true;
-          tag.appendChild(option);
-        });
-
-        const yearSelect = document.createElement("select");
-        yearSelect.classList.add("year-input");
-        yearSelect.style.marginLeft = "10px";
-        yearSelect.style.display = (status === "Completed") ? "inline-block" : "none";
-        
-        const monthSelect = document.createElement("select");
-        monthSelect.classList.add("month-input");
-        monthSelect.style.marginLeft = "10px";
-        monthSelect.style.display = (status === "Completed") ? "inline-block" : "none";
-
-        const monthOptions = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        monthOptions.forEach((m, i) => {
-          const option = document.createElement("option");
-          option.value = i === 0 ? "" : m;
-          option.textContent = i === 0 ? "Month" : m;
-          if (m === month) option.selected = true;
-          monthSelect.appendChild(option);
-        });
-
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Year";
-        yearSelect.appendChild(defaultOption);
-
-        // Add year options from 2025 to 1970
-        for (let y = 2025; y >= 1970; y--) {
-          const option = document.createElement("option");
-          option.value = y;
-          option.textContent = y;
-          if (String(y) === year) option.selected = true;
-          yearSelect.appendChild(option);
-        }
-
-        tag.addEventListener("change", () => {
-          tag.className = "tag";
-          tag.classList.add(`tag${tag.value}`);
-          yearSelect.style.display = (tag.value === "Completed") ? "inline-block" : "none";
-          updateProgress(platform);
-          updateChart();
-          saveToLocalStorage();
-      	});
-
-        yearSelect.addEventListener("change", () => {
-          saveToLocalStorage();
-        });
-        
-        monthSelect.addEventListener("change", () => {
-          saveToLocalStorage();
-        });
-
-        const removeBtn = document.createElement("button");
-        removeBtn.textContent = "Remove";
-        removeBtn.className = "remove-button";
-        removeBtn.addEventListener("click", () => {
-          li.remove();
-          updateProgress(platform);
-          updateChart();
-          saveToLocalStorage();
-        });
-
-        li.appendChild(span);
-        li.appendChild(tag);
-        li.appendChild(yearSelect);
-        li.appendChild(monthSelect);
-        li.appendChild(removeBtn);
-        li.setAttribute("data-rating", rating || "");
-        return li;
-      }
-
-      document.querySelectorAll(".add-form").forEach((form) => {
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
-          const platform = form.dataset.platform;
-          const titleInput = form.querySelector("input");
-          const statusSelect = form.querySelector("select");
-          const gameList = document.getElementById(`${platform}-games`);
-
-          const title = titleInput.value.trim();
-          const status = statusSelect.value;
-          if (!title) return;
-
-          const li = createGameItem(platform, title, status);
-
-          const existingItems = Array.from(gameList.querySelectorAll("li"));
-          existingItems.push(li);
-          existingItems.sort((a, b) => {
-            const aText = a.querySelector("span").textContent.toLowerCase();
-            const bText = b.querySelector("span").textContent.toLowerCase();
-            return aText.localeCompare(bText);
-          });
-
-          gameList.innerHTML = "";
-          existingItems.forEach(item => gameList.appendChild(item));
-
-          titleInput.value = "";
-          updateProgress(platform);
-          updateChart();
-          saveToLocalStorage();
-        });
-      });
-
-      const platforms = ["epic", "nintendo", "playstation", "steam", "xbox"];
-      const statuses = ["All", "Completed", "NotStarted", "InProgress", "OnHold"];
-      
-      const statusLabels = {
-        All: "All",
-        Completed: "Completed",
-        NotStarted: "Not Started",
-        InProgress: "In Progress",
-        OnHold: "On Hold"
-      };
-
-      platforms.forEach((platform) => {
-        const filterContainer = document.createElement("div");
-        filterContainer.id = `${platform}-filters`;
-        filterContainer.className = "tab-buttons2";
-        const container = document.getElementById(`${platform}-games`).parentElement;
-        container.insertBefore(filterContainer, container.firstChild);
-
-        statuses.forEach((status) => {
-          const btn = document.createElement("div");
-          btn.className = "tab-button";
-          btn.textContent = statusLabels[status];
-  		  btn.dataset.status = status;
-          btn.addEventListener("click", () => filterGamesByStatus(platform, status));
-          filterContainer.appendChild(btn);
-        });
-      });
-
-      function filterGamesByStatus(platform, status) {
-        const list = document.getElementById(`${platform}-games`);
-        const items = list.querySelectorAll("li");
-
-        items.forEach((item) => {
-          const tag = item.querySelector(".tag");
-          const value = tag?.value || "";
-          const currentStatus = value;
-          item.style.display = (status === "All" || currentStatus === status) ? "" : "none";
-        });
-
-        document.querySelectorAll(`#${platform}-filters .tab-button`).forEach((btn) => {
-          btn.classList.remove("active");
-          if (btn.textContent === status) btn.classList.add("active");
-        });
-      }
-      
-      let statusChart;
-
-      function updateChart() {
-        const statusCounts = {
-          "Completed": 0,
-          "NotStarted": 0,
-          "InProgress": 0,
-          "OnHold": 0
-        };
-
-        platforms.forEach((platform) => {
-          const list = document.querySelectorAll(`#${platform}-games .tag`);
-          list.forEach((tag) => {
-            const status = tag.value;
-            if (statusCounts[status] !== undefined) {
-              statusCounts[status]++;
-            }
-          });
-        });
-
-        const totalGames = Object.values(statusCounts).reduce((a, b) => a + b, 0);
-        document.getElementById("totalGames").innerHTML = `Total Games: <span style="color: #aaa">${totalGames}</span>`
-        
-        const percentCompleted = totalGames ? ((statusCounts.Completed / totalGames) * 100).toFixed(1) : 0;
-		document.getElementById("totalGames").innerHTML += `<br>Completed: <span style="color: #aaa">${percentCompleted}%</span>`;
-
-        const statusLabels = {
-          Completed: "Completed",
-          NotStarted: "Not Started",
-          InProgress: "In Progress",
-          OnHold: "On Hold"
-        };
-
-        const breakdownHTML = Object.entries(statusCounts).map(([key, count]) => {
-          const percent = totalGames ? ((count / totalGames) * 100).toFixed(1) : 0;
-          return `<div>${statusLabels[key]}: ${count} <span style="color: #aaa">(${percent}%)</span></div>`;
-        }).join("");
-
-        document.getElementById("statusBreakdown").innerHTML = breakdownHTML;
-
-        const data = {
-          labels: ["Completed", "Not Started", "In Progress", "On Hold"],
-          datasets: [{
-            label: "Game Statuses",
-            data: [
-              statusCounts.Completed,
-              statusCounts.NotStarted,
-              statusCounts.InProgress,
-              statusCounts.OnHold
-            ],
-            backgroundColor: ["#4ADE80", "#949494", "#0EA5E9", "#84CC16"],
-            borderColor: "#121212",
-            borderWidth: 2,
-          }]
-        };
-        
-        let platformHTML = "";
-
-        platforms.forEach(platform => {
-          const list = document.querySelectorAll(`#${platform}-games li`);
-          const total = list.length;
-          const completed = Array.from(list).filter(li => {
-            const tag = li.querySelector(".tag");
-            return tag && tag.value === "Completed";
-          }).length;
-
-          const percent = total ? ((completed / total) * 100).toFixed(1) : "0.0";
-          const name = platform.charAt(0).toUpperCase() + platform.slice(1);
-          platformHTML += `<div>${name}: ${completed} / ${total} <span style="color: #aaa">(${percent}%)</span></div>`;
-        });
-
-        document.getElementById("platformBreakdown").innerHTML = platformHTML;     
-
-        // Destroy old chart if it exists
-        if (statusChart) {
-          statusChart.destroy();
-          statusChart = null;
-        }
-
-        const ctx = document.getElementById("statusChart").getContext("2d");
-        statusChart = new Chart(ctx, {
-          type: "doughnut",
-          data,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                labels: {
-                  color: "#ccc"
-                }
-              }
-            }
-          }
-        });
-        
-        updateRatingsTab();
-        updateCompletedByYear();
-      }
-      
-      function updateCompletedByYear() {
-        const container = document.getElementById("completed-by-year");
-        container.innerHTML = "<h3>Completed Games by Year</h3>";
-
-        const gamesByYearMonth = {};
-        const yearCounts = {};
-
-        // Gather all completed games into year/month and count per year
-        platforms.forEach(platform => {
-          const listItems = document.querySelectorAll(`#${platform}-games li`);
-          listItems.forEach(li => {
-            const tag = li.querySelector(".tag");
-            if (tag?.value !== "Completed") return;
-
-            const selects = li.querySelectorAll("select");
-            const yearSelect = selects[1];
-            const monthSelect = selects[2];
-
-            const year = yearSelect?.value || "Unknown";
-            const month = monthSelect?.value || "Unknown";
-            const title = li.querySelector("span")?.textContent || "Untitled";
-
-            if (!gamesByYearMonth[year]) gamesByYearMonth[year] = {};
-            if (!gamesByYearMonth[year][month]) gamesByYearMonth[year][month] = [];
-            gamesByYearMonth[year][month].push(title);
-
-            // Count total completed per year
-            yearCounts[year] = (yearCounts[year] || 0) + 1;
-          });
-        });
-
-        // Compute total completed overall
-        const totalCompleted = Object.values(yearCounts).reduce((a, b) => a + b, 0);
-
-        const years = Object.keys(gamesByYearMonth).sort((a, b) => b - a); // newest first
-
-        years.forEach(year => {
-          const totalThisYear = yearCounts[year];
-          const percentOfAll = totalCompleted ? ((totalThisYear / totalCompleted) * 100).toFixed(1) : "0.0";
-
-          const yearSection = document.createElement("div");
-          yearSection.classList.add("year-section");
-
-          const toggle = document.createElement("button");
-          toggle.className = "year-toggle";
-          toggle.innerHTML = `▶ ${year}: ${totalThisYear} <span style="color:#aaa">(${percentOfAll}%)</span>`;
-          toggle.style.background = "none";
-          toggle.style.border = "none";
-          toggle.style.color = "#ccc";
-          toggle.style.cursor = "pointer";
-          toggle.style.fontSize = "16px";
-          toggle.style.marginTop = "10px";
-
-          const content = document.createElement("div");
-          content.style.display = "none";
-          content.style.marginLeft = "20px";
-
-          const months = Object.keys(gamesByYearMonth[year]).sort((a, b) => {
-            const order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            return order.indexOf(a) - order.indexOf(b);
-          });
-
-          months.forEach(month => {
-            const monthGames = gamesByYearMonth[year][month];
-            const count = monthGames.length;
-            const percent = totalThisYear ? ((count / totalThisYear) * 100).toFixed(1) : "0.0";
-
-            const monthDiv = document.createElement("div");
-            monthDiv.innerHTML = `<strong>${month}</strong> <span style="color:#aaa">(${count} - ${percent}%)</span>`;
-            monthDiv.style.marginTop = "10px";
- 
-            monthGames.forEach(game => {
-              const gameItem = document.createElement("div");
-              gameItem.textContent = game;
-              gameItem.style.marginLeft = "10px";
-              monthDiv.appendChild(gameItem);
-            });
-
-            content.appendChild(monthDiv);
-          });
-
-          toggle.addEventListener("click", () => {
-            const isVisible = content.style.display === "block";
-            content.style.display = isVisible ? "none" : "block";
-            toggle.innerHTML = `▶ ${year}: ${totalThisYear} <span style="color:#aaa">(${percentOfAll}%)</span>`;
-          });
-
-          yearSection.appendChild(toggle);
-          yearSection.appendChild(content);
-          container.appendChild(yearSection);
-        });
-      }
-      
-      function updateRatingsTab() {
-        const container = document.getElementById("ratings-list");
-        container.innerHTML = "";
-
-        const completedGames = [];
-
-        platforms.forEach(platform => {
-          const list = document.querySelectorAll(`#${platform}-games li`);
-          list.forEach(li => {
-            const tag = li.querySelector(".tag");
-            const year = li.querySelector('select:nth-of-type(1)')?.value || "";
-            const month = li.querySelector('select:nth-of-type(2)')?.value || "";
-            const title = li.querySelector("span").textContent;
-            const currentRating = li.getAttribute("data-rating") || "";
-
-            if (tag?.value === "Completed") {
-              completedGames.push({
-                platform,
-                li,
-                title,
-                year,
-                month,
-                rating: currentRating,
-                ratingNum: Number(currentRating) || 0,
-              });
-            }
-          });
-        });
-
-        completedGames.sort((a, b) => b.ratingNum - a.ratingNum);
-
-        completedGames.forEach(game => {
-          const div = document.createElement("div");
-          div.style.marginBottom = "10px";
-
-          // Use flexbox for horizontal alignment
-          div.style.display = "flex";
-          div.style.alignItems = "center";
-          div.style.justifyContent = "space-between"; // spread title and rating apart
-
-          // Left side: title + year/month
-          const titleSpan = document.createElement("span");
-          titleSpan.style.flexGrow = "1"; // take available space
-          titleSpan.innerHTML = `<strong>${game.title}</strong> <span style="color:#aaa; margin-left:8px;">${game.month ? game.month + " " : ""}${game.year}</span>`;
-
-          // Right side: rating dropdown
-          const ratingSelect = document.createElement("select");
-          ratingSelect.className = "year-input";
-          ratingSelect.style.marginLeft = "10px";
-          ratingSelect.style.flexShrink = "0"; // don’t shrink
-
-          const noRatingOpt = document.createElement("option");
-          noRatingOpt.value = "";
-          noRatingOpt.textContent = "Rating";
-          ratingSelect.appendChild(noRatingOpt);
-
-          for (let i = 1; i <= 10; i++) {
-            const opt = document.createElement("option");
-            opt.value = i.toString();
-            opt.textContent = i.toString();
-            if (game.rating === i.toString()) opt.selected = true;
-            ratingSelect.appendChild(opt);
-          }
-
-          ratingSelect.addEventListener("change", () => {
-            game.li.setAttribute("data-rating", ratingSelect.value);
-            saveToLocalStorage();
-            updateRatingsTab();
-          });
-
-          div.appendChild(titleSpan);
-          div.appendChild(ratingSelect);
-          container.appendChild(div);
-        });
-      }
-
-      function exportChecklist() {
-        const data = { 
-          prefix: "gameBacklog" // Add this line
-        };
-
-        platforms.forEach((platform) => {
-          const items = document.querySelectorAll(`#${platform}-games li`);
-          data[platform] = Array.from(items).map((item) => {
-            const tag = item.querySelector(".tag");
-            const yearSelect = item.querySelector('select.year-input');
-            const monthSelect = item.querySelector('select.month-input');
-            const status = tag?.value || "OnHold";
-
-            return {
-              title: item.querySelector("span").textContent,
-              status,
-              year: yearSelect?.value || "",
-              month: monthSelect?.value || "",
-              rating: item.getAttribute("data-rating") || ""
-            };
-          });
-        });
-
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "game-backlog.json";
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-
-      function importChecklist() {
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = "application/json";
-        fileInput.style.display = "none";
-
-        fileInput.addEventListener("change", (event) => {
-          const file = event.target.files[0];
-          if (!file) return;
-
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            try {
-              const data = JSON.parse(e.target.result);
-
-              if (data.prefix !== "gameBacklog") {
-                alert(`This checklist file is not for this backlog (found prefix: "${data.prefix || 'none'}"). Import aborted.`);
-                return;
-              }
-
-              platforms.forEach((platform) => {
-                const list = document.getElementById(`${platform}-games`);
-                list.innerHTML = "";
-                const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
-                sortedGames.forEach((game) => {
-                  const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating);
-                  li.setAttribute("data-rating", game.rating || "");
-                  list.appendChild(li);
-                });
-                updateProgress(platform);
-                updateChart();
-              });
-
-              saveToLocalStorage();
-              alert("Game backlog imported successfully.");
-            } catch {
-              alert("Invalid file format.");
-            }
-          };
-
-          reader.readAsText(file);
-        });
-
-        document.body.appendChild(fileInput);
-        fileInput.click();
-      }
-      
-      function toggleTheme() {
-        const body = document.body;
-        const toggleButton = document.querySelector(".tab-button[onclick='toggleTheme()']");
-
-        body.classList.toggle("light-mode");
-        const isLight = body.classList.contains("light-mode");
-
-        localStorage.setItem("theme", isLight ? "light" : "dark");
-        toggleButton.textContent = isLight ? "🌞 Light / Dark Mode" : "🌙 Light / Dark Mode";
-      }
-      
-      window.addEventListener("DOMContentLoaded", loadFromLocalStorage);
-    </script>
-  </body>
+    <!-- Main Content Section -->
+    <div class="content-section">
+      <!-- Platform Navigation Tabs -->
+      <div class="tab-box2">
+        <div class="tab-buttons2">
+          <div class="tab-button" data-target="epic">Epic</div>
+          <div class="tab-button" data-target="nintendo">Nintendo</div>
+          <div class="tab-button" data-target="playstation">Playstation</div>
+          <div class="tab-button" data-target="steam">Steam</div>
+          <div class="tab-button" data-target="xbox">Xbox</div>
+        </div>
+      </div>
+
+      <!-- Ratings Section -->
+      <div class="content" id="ratings">
+        <h2>Game Ratings</h2>
+        <div class="scrollable-list" id="ratings-list"></div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="content" id="stats">
+        <h2>Game Status Overview</h2>
+        <div class="scrollable-list">
+          <div class="stats-chart">
+            <canvas id="statusChart" style="max-width: 250px; max-height: 250px;"></canvas>
+          </div>
+          <div class="stats-layout">
+            <div class="stats-text">
+              <div id="totalGames" style="margin-bottom: 10px; font-size: 1.1em;"></div>
+              <div id="statusBreakdown"></div>
+
+              <div style="margin-top: 20px;">
+                <div id="completed-by-year" style="margin-top: 20px;">
+                  <h2>Completed Games by Year</h2>
+                </div>
+                <div style="margin-bottom: 10px;"><h3>Platforms</h3></div>
+                <div id="platformBreakdown"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Tabs -->
+      <!-- Each platform section includes a form, progress bar, and game list -->
+      <div class="content active" id="epic">
+        <h2>Epic Games</h2>
+        <form class="add-form" data-platform="epic">
+          <input type="text" placeholder="Add game title" required />
+          <select>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
+        <div id="epic-filters" class="tab-buttons2"></div>
+        <div class="progress" id="epic-progress">Completed 0 / 0</div>
+        <div class="scrollable-list">
+          <ul id="epic-games"></ul>
+        </div>
+      </div>
+
+      <div class="content" id="nintendo">
+        <h2>Nintendo</h2>
+        <form class="add-form" data-platform="nintendo">
+          <input type="text" placeholder="Add game title" required />
+          <select>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
+        <div class="progress" id="nintendo-progress">Completed 0 / 0</div>
+        <div class="scrollable-list">
+          <ul id="nintendo-games"></ul>
+        </div>
+      </div>
+
+      <div class="content" id="playstation">
+        <h2>Playstation</h2>
+        <form class="add-form" data-platform="playstation">
+          <input type="text" placeholder="Add game title" required />
+          <select>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
+        <div class="progress" id="playstation-progress">Completed 0 / 0</div>
+        <div class="scrollable-list">
+          <ul id="playstation-games"></ul>
+        </div>
+      </div>
+
+      <div class="content" id="steam">
+        <h2>Steam</h2>
+        <form class="add-form" data-platform="steam">
+          <input type="text" placeholder="Add game title" required />
+          <select>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
+        <div class="progress" id="steam-progress">Completed 0 / 0</div>
+        <div class="scrollable-list">
+          <ul id="steam-games"></ul>
+        </div>
+      </div>
+
+      <div class="content" id="xbox">
+        <h2>Xbox</h2>
+        <form class="add-form" data-platform="xbox">
+          <input type="text" placeholder="Add game title" required />
+          <select>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit">Add</button>
+        </form>
+        <div class="progress" id="xbox-progress">Completed 0 / 0</div>
+        <div class="scrollable-list">
+          <ul id="xbox-games"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="scripts.js"></script>
+</body>
 </html>
