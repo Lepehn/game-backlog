@@ -540,13 +540,16 @@
             const yearSelect = item.querySelector('select.year-input');
             const monthSelect = item.querySelector('select.month-input');
             const status = tag?.value || "OnHold";
+			const noteTextarea = item.querySelector(".tagNote");
+            const note = noteTextarea ? noteTextarea.value : "";  
 
             return {
               title: item.querySelector("span").textContent,
               status,
               year: yearSelect?.value || "",
               month: monthSelect?.value || "",
-              rating: item.getAttribute("data-rating") || ""
+              rating: item.getAttribute("data-rating") || "",
+			  note
             };
           });
         });
@@ -585,7 +588,7 @@
                 list.innerHTML = "";
                 const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
                 sortedGames.forEach((game) => {
-                  const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating);
+                  const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating, game.note);
                   li.setAttribute("data-rating", game.rating || "");
                   list.appendChild(li);
                 });
