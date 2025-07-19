@@ -31,13 +31,16 @@
             const monthSelect = item.querySelector('select.month-input');
             const rating = item.getAttribute("data-rating") || "";
             const status = tag?.value || "OnHold";
+	    const noteTextarea = item.querySelector(".tagNote");
+            const note = noteTextarea ? noteTextarea.value : "";
 
             return {
               title: item.querySelector("span").textContent,
               status,
               year: yearSelect?.value || "",
               month: monthSelect?.value || "",
-              rating
+              rating,
+	      note
             };
           });
         });
@@ -56,7 +59,7 @@
             list.innerHTML = "";
             const sortedGames = (data[platform] || []).sort((a, b) => a.title.localeCompare(b.title));
             sortedGames.forEach((game) => {
-              const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating);
+              const li = createGameItem(platform, game.title, game.status, game.year, game.month, game.rating, game.note || "");
               list.appendChild(li);
             });
             updateProgress(platform);
@@ -67,7 +70,7 @@
         }
       }
 
-      function createGameItem(platform, title, status, year = "", month = "", rating = "") {
+      function createGameItem(platform, title, status, year = "", month = "", rating = "", note = "") {
         const li = document.createElement("li");
         const span = document.createElement("span");
         span.textContent = title;
@@ -142,12 +145,41 @@
           saveToLocalStorage();
         });
 
+	// Editable note textarea
+	const noteTextarea = document.createElement("textarea");
+	noteTextarea.classList.add("tagNote");      
+	noteTextarea.placeholder = "Add note...";
+	noteTextarea.value = note;
+	noteTextarea.rows = 1; // start single line but user can resize vertically
+	noteTextarea.style.display = "none"; // Hide initially      
+
+	// Create the "Add Note" toggle button
+	const noteToggleBtn = document.createElement("button");
+	noteToggleBtn.textContent = note ? "Edit Note" : "Add Note";
+	noteToggleBtn.classList.add("noteToggleBtn");	  
+	noteToggleBtn.addEventListener("click", () => {
+	if (noteTextarea.style.display === "none") {
+	noteTextarea.style.display = "block";
+	noteToggleBtn.textContent = "Hide Note";
+	} else {
+	noteTextarea.style.display = "none";
+	noteToggleBtn.textContent = noteTextarea.value ? "Edit Note" : "Add Note";
+	}
+	});
+
+	// Save on input
+	noteTextarea.addEventListener("input", () => {
+	saveToLocalStorage();
+	});
+
         li.appendChild(span);
         li.appendChild(tag);
         li.appendChild(yearSelect);
         li.appendChild(monthSelect);
-        li.appendChild(removeBtn);
+        li.appendChild(removeBtn);    
         li.setAttribute("data-rating", rating || "");
+	li.appendChild(noteToggleBtn);      
+	li.appendChild(noteTextarea); // add this
         return li;
       }
 
