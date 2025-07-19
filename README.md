@@ -15,6 +15,7 @@ A simple and stylish HTML-based game backlog tracker that lets you manage your c
   - On Hold
   - Completed
 - 🗑️ Remove individual games
+- 📝 Editable notes for individual games
 - 📦 Export and import your game list as a `.json` file
 - 📊 Progress tracking per platform
 - 📈 View stats with a doughnut chart, total game count, and status breakdown
