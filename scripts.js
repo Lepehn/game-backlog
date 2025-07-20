@@ -614,8 +614,8 @@
         const body = document.body;
         const toggleButton = document.querySelector(".tab-button[onclick='toggleTheme()']");
 
-        body.classList.toggle("light-mode");
-        const isLight = body.classList.contains("light-mode");
+        body.classList.toggle("cerulean");
+        const isLight = body.classList.contains("Cerulean");
 
         localStorage.setItem("theme", isLight ? "light" : "dark");
         toggleButton.textContent = isLight ? "🌞 Light / Dark Mode" : "🌙 Light / Dark Mode";
