@@ -449,7 +449,6 @@ body.light-mode select,
 body.light-mode input {
   background: #E5E5E5;
   color: #121212;
-  border: 1px solid #ccc;
 }
 
 body.light-mode .scrollable-list {
@@ -485,12 +484,12 @@ body.cerulean .tab-button {
 body.cerulean .tab-button:hover,
 body.cerulean .tab-button.active {
   background: #414150;
-  color: #3C09B3;
+  color: #f7bf00;
 }
 
 body.cerulean .add-form button {
   background: #363546;
-  color: #3C09B3;
+  color: #f7bf00;
 }
 
 body.cerulean .remove-button {
@@ -521,7 +520,6 @@ body.cerulean select,
 body.cerulean input {
   background: #1e1d2f;
   color: #FFFFFF;
-  border: 1px solid #ccc;
 }
 
 body.cerulean .scrollable-list {
