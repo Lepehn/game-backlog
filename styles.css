@@ -483,23 +483,33 @@ body.cerulean .tab-button {
 
 body.cerulean .tab-button:hover,
 body.cerulean .tab-button.active {
-  background: #414150;
-  color: #f7bf00;
+  background: #FFBADE;
+  color: #000000;
 }
 
 body.cerulean .add-form button {
   background: #363546; 
-  color: #f7bf00;
+  color: #FFFFFF;
 }
 
 body.cerulean .remove-button {
   background: #363546;
-  color: #222;
+  color: #FFFFFF;
 }
 
 body.cerulean .remove-button:hover {
   background: #ff5c5c;
   color: #fff;
+}
+
+.noteToggleBtn {
+  background: #363546;
+  color: #fff;
+}
+
+.noteToggleBtn:hover {
+  background: #004A77;
+  color: #000000;
 }
 
 body.cerulean .tagCompleted { background: #4ADE80; color: #000; }
@@ -508,8 +518,8 @@ body.cerulean .tagInProgress { background: #0EA5E9; color: #000; }
 body.cerulean .tagOnHold { background: #84CC16; color: #000; }
 
 body.cerulean .tagNote {
-  background: #eaeaea;
-  color: #333;
+  background: #21202F;
+  color: #494855;
 }
 
 body.cerulean select,
