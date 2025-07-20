@@ -456,6 +456,78 @@ body.light-mode .scrollable-list {
   scrollbar-color: #ccc #E5E5E5;
 }
 
+
+/* ===============================
+   Ceruleane Overrides
+=============================== */
+body.cerulean {
+  background: #EDEDED;
+  color: #201f31;
+}
+
+body.cerulean .sidebar,
+body.cerulean .tab-box,
+body.cerulean .tab-box2,
+body.cerulean .content {
+  background: #DEDEDE;
+  color: #2B2A3B;
+}
+
+body.cerulean .content ul {
+  color: #212121;
+}
+
+body.cerulean .tab-button {
+  background: #363546;
+  color: #222;
+}
+
+body.cerulean .tab-button:hover,
+body.cerulean .tab-button.active {
+  background: #414150;
+  color: #3C09B3;
+}
+
+body.cerulean .add-form button {
+  background: #363546;
+  color: #3C09B3;
+}
+
+body.cerulean .remove-button {
+  background: #ddd;
+  color: #222;
+}
+
+body.cerulean .remove-button:hover {
+  background: #ff5c5c;
+  color: #fff;
+}
+
+body.cerulean .tagCompleted { background: #4ADE80; color: #000; }
+body.cerulean .tagNotStarted { background: #949494; color: #000; }
+body.cerulean .tagInProgress { background: #0EA5E9; color: #000; }
+body.cerulean .tagOnHold { background: #84CC16; color: #000; }
+
+body.cerulean .tagNote {
+  background: #eaeaea;
+  color: #333;
+}
+
+body.cerulean .profile-bg {
+  border: 2px solid #dcdcdc;
+}
+
+body.cerulean select,
+body.cerulean input {
+  background: #1e1d2f;
+  color: #121212;
+  border: 1px solid #ccc;
+}
+
+body.cerulean .scrollable-list {
+  scrollbar-color: #ccc #1e1d2f;
+}
+
 /* ===============================
    Responsive
 =============================== */
