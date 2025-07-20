@@ -462,7 +462,7 @@ body.light-mode .scrollable-list {
 =============================== */
 body.cerulean {
   background: #201f31;
-  color: #121212;
+  color: #FFFFFF;
 }
 
 body.cerulean .sidebar,
@@ -470,16 +470,16 @@ body.cerulean .tab-box,
 body.cerulean .tab-box2,
 body.cerulean .content {
   background: #2B2A3B;
-  color: #121212;
+  color: #FFFFFF;
 }
 
 body.cerulean .content ul {
-  color: #212121;
+  color: #FFFFFF;
 }
 
 body.cerulean .tab-button {
   background: #363546;
-  color: #222;
+  color: #FFFFFF;
 }
 
 body.cerulean .tab-button:hover,
@@ -520,12 +520,12 @@ body.cerulean .profile-bg {
 body.cerulean select,
 body.cerulean input {
   background: #1e1d2f;
-  color: #121212;
+  color: #FFFFFF;
   border: 1px solid #ccc;
 }
 
 body.cerulean .scrollable-list {
-  scrollbar-color: #ccc #1e1d2f;
+  scrollbar-color: #585765 #1e1d2f;
 }
 
 /* ===============================
