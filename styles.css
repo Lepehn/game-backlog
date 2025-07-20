@@ -488,12 +488,12 @@ body.cerulean .tab-button.active {
 }
 
 body.cerulean .add-form button {
-  background: #363546;
+  background: #363546; 
   color: #f7bf00;
 }
 
 body.cerulean .remove-button {
-  background: #ddd;
+  background: #363546;
   color: #222;
 }
 
@@ -512,13 +512,9 @@ body.cerulean .tagNote {
   color: #333;
 }
 
-body.cerulean .profile-bg {
-  border: 2px solid #dcdcdc;
-}
-
 body.cerulean select,
 body.cerulean input {
-  background: #1e1d2f;
+  background: #0D0D15;
   color: #FFFFFF;
 }
 
